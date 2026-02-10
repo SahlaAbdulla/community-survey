@@ -1,0 +1,15 @@
+.village-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px; /* small gap between pills */
+}
+
+.village-pill {
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  color: black;
+  font-weight: 500;
+}

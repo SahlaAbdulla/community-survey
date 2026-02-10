@@ -1,0 +1,28 @@
+.modal-content {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #333;
+}
+
+.form-control,
+.form-select {
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+}
+
+button.btn-success {
+  padding: 6px 18px;
+  border-radius: 8px;
+}
+
+button.btn-light {
+  border-radius: 8px;
+}
+
+.card {
+  border-radius: 12px !important;
+}

@@ -1,0 +1,52 @@
+/* 🎨 Match Family Table Button Style */
+
+/* Table layout */
+.table th,
+.table td {
+  vertical-align: middle !important;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f9f9f9;
+  transition: 0.2s ease;
+}
+
+/* Action Button Wrapper */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+/* Common Button Style */
+.action-buttons .btn {
+  width: 38px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 3px; /* smaller curve like FamilyList */
+  color: #fff;
+  font-size: 15px;
+  transition: all 0.15s ease-in-out;
+}
+
+/* ✏️ Edit Button */
+.action-buttons .btn-edit {
+  background-color: #f4b400; /* same as FamilyList */
+}
+
+/* 🗑️ Delete Button */
+.action-buttons .btn-delete {
+  background-color: #e74c3c;
+}
+
+/* Hover (soft darken) */
+.action-buttons .btn:hover {
+  filter: brightness(0.92);
+  transform: none; /* no scale, just color darken */
+}
