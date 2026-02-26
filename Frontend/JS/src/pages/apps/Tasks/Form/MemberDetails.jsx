@@ -137,28 +137,29 @@ const MemberDetails = () => {
                   rows={[
                    { label: "Name (EN)", value: member.display_name || member.m_name_en || "—" },
                     { label: "Name (ML)", value: member.m_name_ml },
+                    { label: "Family Name", value: member.family_name_en || member.family_name_ml },
+                    { label: "Family Name(ML)", value: member.family_name_ml },
+                   {
+  label: "House No",
+  value: member?.h_no
+    ? `${member.h_no}${member.sub ? ` / ${member.sub}` : ""}`
+    : "—"
+},
+                    { label: "House Owner", value: member.owner_name },
                     { label: "Gender", value: member.m_gender },
                     { label: "Age", value: member.m_age },
                     { label: "DOB", value: member.date_of_birth },
                     { label: "Phone", value: member.phone_no },
                     { label: "Relation", value: member.m_relation },
                     { label: "Marital Status", value: member.marital_status },
+                      { label: "Religion", value: member.religion },
+                    { label: "Caste", value: member.caste },
                     { label: "Blood Group", value: member.blood_grp },
                   ]}
                 />
               </Tab>
 
-              <Tab eventKey="family" title="Family Details">
-                <SectionBlock
-                  rows={[
-                    { label: "Family", value: member.family_name_common },
-                    { label: "House Owner", value: member.owner_name },
-                    { label: "Religion", value: member.religion },
-                    { label: "Caste", value: member.caste },
-                  ]}
-                />
-              </Tab>
-
+             
               <Tab eventKey="education" title="Education">
                 {member.educations?.length ? (
                   member.educations.map((edu, i) => (
@@ -182,19 +183,19 @@ const MemberDetails = () => {
                     { label: "Job Status", value: <YesNo value={member.job_status} /> },
                     { label: "Job Country", value: member.job_country },
                     { label: "Monthly Income", value: member.monthly_income },
-                    { label: "Organization", value: member.organization },
-                    { label: "Organization Type", value: member.org_type },
+                    
                   ]}
                 />
               </Tab>
 
-              <Tab eventKey="political" title="Political">
+              <Tab eventKey="political" title="Election Details">
                 <SectionBlock
                   rows={[
                     { label: "Election ID", value: <YesNo value={member.election_id} /> },
-                    { label: "SEC ID", value: member.voter_id_number },
+                   
                     { label: "Roll No (SEC)", value: member.roll_no_sec },
-                    { label: "Roll No (CEO)", value: member.roll_no_ceo },
+                     { label: "SEC ID", value: member.voter_id_number },
+                    { label: "Roll No (ECI)", value: member.roll_no_ceo },
                     { label: "EPIC ID", value: member.epic_id },
                     { label: "SIR 2002", value: <YesNo value={member.has_2002} /> },
                     { label: "Roll No 2002", value: member.roll_no_2002 },
@@ -223,6 +224,15 @@ const MemberDetails = () => {
                       label: "Health Insurance",
                       value: <YesNo value={member.m_health_insurance} />,
                     },
+                  ]}
+                />
+              </Tab>
+              <Tab eventKey="other" title="Other Details">
+                <SectionBlock
+                  rows={[
+                    
+                    { label: "Organization", value: member.organization },
+                    { label: "Organization Type", value: member.org_type },
                   ]}
                 />
               </Tab>

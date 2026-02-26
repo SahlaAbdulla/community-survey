@@ -40,6 +40,7 @@ const schema = yup.object().shape({
   job_country: yup.string().nullable(),
   monthly_income: yup.number().nullable().transform((v) => (isNaN(v) ? null : v)),
   organization: yup.string().nullable(),
+  insurance_type: yup.string().nullable(),
   org_type: yup.string().nullable(),
   m_pension: yup.string().nullable(),
   pension_type: yup.string().nullable(),
@@ -128,6 +129,7 @@ const AddEditMember = ({
       election_id: "",
       voter_id_number: "",
       has_2002: "",
+      insurance_type: "",
       guardian_en: "",
       guardian_ml: "",
       roll_no_2002: "",
@@ -167,6 +169,8 @@ const AddEditMember = ({
   const electionId = watch("election_id");
   const organization = watch("organization");
   const politicalParty = watch("political_party");
+  const healthInsurance = watch("m_health_insurance");
+
 
   // calculate m_age from dob
   useEffect(() => {
@@ -256,6 +260,7 @@ const navigate = useNavigate();
   if (!isOpen) return;
 
   if (isEditable && memberData) {
+    console.log("Polling Booth from DB:", memberData.polling_booth_no);
      console.log("🟢 EDIT MODE DATA:", memberData); // <-- ഇതാണ് ചേർക്കേണ്ടത്
     reset({
       ...memberData,
@@ -332,6 +337,7 @@ const navigate = useNavigate();
       political_type: "",
       m_disability: "",
       m_health_insurance: "",
+      insurance_type: "",
     });
 
     setActiveSection("basic");
@@ -356,6 +362,7 @@ const onSubmit = async (data) => {
     job_status: data.job_status === "true",
     election_id: data.election_id === "true",
     has_chronic_disease: data.has_chronic_disease === "true",
+    m_health_insurance: data.m_health_insurance === "true",
 
     monthly_income:
       data.monthly_income && data.monthly_income.toString().trim() !== ""
@@ -482,7 +489,7 @@ useEffect(() => {
     </Col>
   );
 
-  const tabs = ["basic", "family", "education", "job", "political", "health"];
+  const tabs = ["basic", "education", "job", "political", "health", "other"];
 
   const familySource =
   families && families.length > 0 ? families : familiesList;
@@ -520,11 +527,12 @@ const familyOptions = familySource.map((f) => ({
         >
           {[
             { key: "basic", label: "Basic Details", ml: "അടിസ്ഥാന വിവരം" },
-            { key: "family", label: "Family Details", ml: "കുടുംബ വിവരം" },
+
             { key: "education", label: "Education", ml: "വിദ്യാഭ്യാസം" },
             { key: "job", label: "Job Details", ml: "തൊഴിൽ വിവരങ്ങൾ" },
-            { key: "political", label: "Political", ml: "രാഷ്ട്രീയം" },
+            { key: "political", label: "Election Details", ml: "ഇലക്ഷൻ വിവരങ്ങൾ" },
             { key: "health", label: "Health", ml: "ആരോഗ്യം" },
+             { key: "other", label: "Other Details", ml: "മറ്റു വിവരങ്ങൾ" },
           ].map((tab) => (
             <Nav.Item key={tab.key} className="flex-fill text-center">
               <Nav.Link
@@ -618,7 +626,19 @@ const familyOptions = familySource.map((f) => ({
   )}
 </Col>
 
-                <Col md={6} style={{ marginTop: "-10px" }}>
+  <Col md={6} style={{ marginTop: "-10px" }}>
+                  <FormInput
+                    label="House Owner"
+                    name="owner_name"
+                    type="text"
+                    register={register}
+                    control={control}
+                    readOnly
+                    placeholder="Auto-filled from family"
+                  />
+                </Col>
+
+                <Col md={6} >
                                   <FormInput
                                     label="Gender"
                                     name="m_gender"
@@ -703,46 +723,8 @@ const familyOptions = familySource.map((f) => ({
                                   </select>
                                   {errors.marital_status && <div className="text-danger">{errors.marital_status.message}</div>}
                                 </Col>
-                
-                                <Col md={6}>
-                                  <FormInput
-                                    label="Blood Group"
-                                    name="blood_grp"
-                                    type="select"
-                                    register={register}
-                                    errors={errors}
-                                    control={control}
-                                  >
-                                    <option value="">Select</option>
-                                    <option value="O+">O+</option>
-                                    <option value="O-">O-</option>
-                                    <option value="A+">A+</option>
-                                    <option value="A-">A-</option>
-                                  </FormInput>
-                                </Col>
-                              </>
-                            )}
-                {/* ... other basic fields ... */}
-              
 
-            {/* FAMILY */}
-            {activeSection === "family" && (
-              <>
-                
-
-                <Col md={6} style={{ marginTop: "-10px" }}>
-                  <FormInput
-                    label="House Owner"
-                    name="owner_name"
-                    type="text"
-                    register={register}
-                    control={control}
-                    readOnly
-                    placeholder="Auto-filled from family"
-                  />
-                </Col>
-
-    <Col md={6}>
+                                 <Col md={6}>
       <FormInput
         label="Religion"
         name="religion"
@@ -776,10 +758,30 @@ const familyOptions = familySource.map((f) => ({
         </FormInput>
       </Col>
     )}
-  </>
-)}
+                
+                                <Col md={6}>
+                                  <FormInput
+                                    label="Blood Group"
+                                    name="blood_grp"
+                                    type="select"
+                                    register={register}
+                                    errors={errors}
+                                    control={control}
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                  </FormInput>
+                                </Col>
+                              </>
+                            )}
+                {/* ... other basic fields ... */}
+              
 
-
+           
+           
                 {/* Education list */}
                 {/* EDUCATION */}
 {activeSection === "education" && (
@@ -787,6 +789,16 @@ const familyOptions = familySource.map((f) => ({
     {fields.map((item, index) => {
       const selectedEducation = watch(`educations.${index}.education`);
       const isLast = index === fields.length - 1;
+
+        let classOptions = [];
+
+  if (selectedEducation === "LP") {
+    classOptions = ["1", "2", "3", "4"];
+  } else if (selectedEducation === "UP") {
+    classOptions = ["5", "6", "7"];
+  } else if (selectedEducation === "HS") {
+    classOptions = ["8", "9", "10"];
+  }
 
       return (
         <Row key={item.id} className="align-items-end mb-2">
@@ -798,7 +810,10 @@ const familyOptions = familySource.map((f) => ({
               className="form-select"
             >
               <option value="">Select</option>
-              <option value="10th">10th</option>
+              <option value="LP">LP</option>
+<option value="UP">UP</option>
+<option value="HS">HS</option>
+             
               <option value="+1">+1</option>
               <option value="+2">+2</option>
               <option value="UG">UG</option>
@@ -840,6 +855,24 @@ const familyOptions = familySource.map((f) => ({
               )}
             </Col>
           )}
+
+          {["LP", "UP", "HS"].includes(selectedEducation) && (
+  <Col md={4}>
+    <label className="form-label">Class</label>
+    <select
+      {...register(`educations.${index}.education_stream`)}
+      className="form-select"
+    >
+      <option value="">Select Class</option>
+      {classOptions.map((cls) => (
+        <option key={cls} value={cls}>
+          {cls}
+        </option>
+      ))}
+    </select>
+  </Col>
+)}
+
 
           {/* Status */}
           <Col md={3}>
@@ -943,26 +976,7 @@ const familyOptions = familySource.map((f) => ({
                   </>
                 )}
                 
-                    <Col md={6}>
-                      <FormInput label="Organization" name="organization" type="select" register={register} errors={errors} control={control}>
-                        <option value="">Select</option>
-                        <option value="NO">NO</option>
-                        <option value="EK">EK</option>
-                        <option value="AP">AP</option>
-                        <option value="MUJAHID">MUJAHID</option>
-                        <option value="JAMAD">JAMAD</option>
-                      </FormInput>
-                    </Col>
-
-                    {organization && organization !== "NO" && (
-                      <Col md={6}>
-                        <FormInput label="Organization Type" name="org_type" type="select" register={register} errors={errors} control={control}>
-                          <option value="">Select</option>
-                          <option value="ACTIVE">ACTIVE</option>
-                          <option value="ASSOCIATIVE">ASSOCIATIVE</option>
-                        </FormInput>
-                      </Col>
-                    )}
+                    
               </>
             )}
 
@@ -1117,17 +1131,22 @@ const familyOptions = familySource.map((f) => ({
                     <Col md={6}>
                       <Form.Group>
   <Form.Label>Polling Booth</Form.Label>
-<Form.Select {...register("polling_booth_no")}>
+<Form.Select
+  {...register("polling_booth_no")}
+  value={watch("polling_booth_no") || ""}
+  onChange={(e) => setValue("polling_booth_no", e.target.value)}
+>
   <option value="">Select Booth</option>
 
-  {pollingBooths?.map((item) => (
-    <option
-      key={item.id}
-      value={`${item.polling_booth_no} - ${item.booth_name}`} // ✅ value matches DB saved format
-    >
-      {item.polling_booth_no} - {item.booth_name}
-    </option>
-  ))}
+  {pollingBooths?.map((item) => {
+    const optionValue = `${item.polling_booth_no}-${item.booth_name}`; // ✅ NO SPACE
+
+    return (
+      <option key={item.id} value={optionValue}>
+        {item.polling_booth_no}-{item.booth_name}
+      </option>
+    );
+  })}
 </Form.Select>
 
 
@@ -1151,6 +1170,41 @@ const familyOptions = familySource.map((f) => ({
                 </Col>
               </>
             )}
+
+             {/* FAMILY */}
+            {activeSection === "other" && (
+              <>
+                
+
+              
+
+   
+   
+
+    <Col md={6}>
+                      <FormInput label="Organization" name="organization" type="select" register={register} errors={errors} control={control}>
+                        <option value="">Select</option>
+                        <option value="NO">NO</option>
+                        <option value="EK">EK</option>
+                        <option value="AP">AP</option>
+                        <option value="MUJAHID">MUJAHID</option>
+                        <option value="JAMAD">JAMAD</option>
+                      </FormInput>
+                    </Col>
+
+                    {organization && organization !== "NO" && (
+                      <Col md={6}>
+                        <FormInput label="Organization Type" name="org_type" type="select" register={register} errors={errors} control={control}>
+                          <option value="">Select</option>
+                          <option value="ACTIVE">ACTIVE</option>
+                          <option value="ASSOCIATIVE">ASSOCIATIVE</option>
+                        </FormInput>
+                      </Col>
+                    )}
+  </>
+)}
+
+
 
             {/* HEALTH */}
             {activeSection === "health" && (
@@ -1229,6 +1283,25 @@ const familyOptions = familySource.map((f) => ({
                     </div>
                   </div>
                 </Col>
+                {healthInsurance === "true" && (
+  <Col md={6}>
+    <FormInput
+      label="Insurance Type"
+      name="insurance_type"
+      type="select"
+      register={register}
+      errors={errors}
+      control={control}
+    >
+      <option value="">Select</option>
+      <option value="Ayushman Bharat">Ayushman Bharat</option>
+      <option value="State Health Scheme">State Health Scheme</option>
+      <option value="ESI">ESI</option>
+      <option value="Private Insurance">Private Insurance</option>
+      <option value="Other">Other</option>
+    </FormInput>
+  </Col>
+)}
               </>
             )}
 
@@ -1252,7 +1325,7 @@ const familyOptions = familySource.map((f) => ({
   )}
 
   {/* Next or Save */}
-  {activeSection !== "health" ? (
+  {activeSection !== "other" ? (
     <Button
       variant="primary"
       onClick={() => {

@@ -228,6 +228,7 @@ class Member(models.Model):
     marital_status = models.CharField(max_length=20, blank=True, null=True)
 
     m_health_insurance = models.BooleanField(default=False,blank=True, null=True)
+    insurance_type = models.CharField(max_length=20, blank=True, null=True)
     has_chronic_disease = models.BooleanField(default=False,blank=True, null=True)
     chronic_disease = models.CharField(max_length=20, blank=True, null=True)
 
